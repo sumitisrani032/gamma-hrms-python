@@ -1,0 +1,28 @@
+[project]
+name = "gamma-python-backend"
+version = "0.1.0"
+description = "FastAPI backend module for GammaHRMS"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.3.0",
+    "python-dotenv>=1.0.1",
+    "sqlalchemy>=2.0.49",
+    "alembic>=1.18.4",
+    "asyncpg>=0.31.0",
+    "pyjwt[crypto]>=2.12.1",
+    "passlib[bcrypt]>=1.7.4",
+    "httpx>=0.28.1",
+]
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "ruff>=0.15.13",
+]
