@@ -24,15 +24,16 @@ class Settings(BaseSettings):
         case_sensitive=True,
     )
 
-    PROJECT_NAME: str = "Gamma HRMS Python Backend Module"
-    API_V1_STR: str = "/api/v1"
-    ENVIRONMENT: str = "development"
-    DEBUG: bool = True
-    PORT: int = 8000
-    HOST: str = "0.0.0.0"
+    PROJECT_NAME: str
+    API_V1_STR: str
+    ENVIRONMENT: str
+    DEBUG: bool
+    PORT: int
+    HOST: str
 
-    DATABASE_URL: AnyUrl = "postgresql+asyncpg://postgres:postgres@localhost:5432/gamma_hrms"
-    BACKEND_CORS_ORIGINS: CorsOrigins = ["*"]
+    DATABASE_URL: AnyUrl
+    BACKEND_CORS_ORIGINS: CorsOrigins
+    SECRET_KEY_BASE: str
 
 
 @lru_cache

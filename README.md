@@ -13,25 +13,37 @@ gamma-python-backend/
 │   ├── __init__.py
 │   ├── main.py                # FastAPI entry point
 │   ├── config.py              # Backward-compatible settings import
-│   ├── core/                  # Application settings and shared core config
-│   ├── db/                    # SQLAlchemy base/session wiring
-│   ├── models/                # SQLAlchemy models
-│   ├── schemas/               # Pydantic request/response schemas
-│   ├── services/              # Business logic
-│   ├── repositories/          # Persistence/query layer
-│   ├── payroll/               # Payroll domain package
+│   ├── core/                  # Settings, database exports, security, dependencies, exceptions
+│   ├── common/                # Shared utils, response helpers, and enums
+│   ├── modules/               # Domain modules
+│   │   ├── auth/
+│   │   ├── employees/
+│   │   ├── attendance/
+│   │   └── payroll/
+│   │       ├── router.py      # Payroll routes
+│   │       ├── schema.py      # Pydantic request/response schemas
+│   │       ├── service.py     # Payroll business logic
+│   │       ├── repository.py  # Payroll database queries
+│   │       ├── model.py       # Payroll SQLAlchemy models
+│   │       └── constants.py   # Payroll constants/messages
+│   ├── db/                    # Existing SQLAlchemy base/session wiring
+│   ├── tests/                 # Application tests
 │   └── api/
 │       ├── __init__.py
+│       ├── router.py          # Top-level API router
 │       ├── deps/              # FastAPI dependencies
 │       └── v1/
 │           ├── __init__.py
-│           ├── api.py         # Main router aggregating all routes
+│           ├── api.py         # Versioned router aggregating v1 routes
 │           └── endpoints/
 │               ├── __init__.py
-│               └── health.py  # Health-check endpoints
+│               ├── health.py  # Health-check endpoints
+│               └── payroll.py # Payroll endpoint group
 ├── alembic.ini
+├── .gitignore
 ├── .env.example               # Template for environment settings
 ├── pyproject.toml             # uv project & dependency configuration
+├── uv.lock
 └── README.md                  # This setup guide
 ```
 
