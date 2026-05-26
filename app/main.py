@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.api import api_router
 from app.core.config import settings
+from app.middleware.current import CurrentContextMiddleware
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -20,6 +21,9 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+# Middleware — populates Current context (tenant, user) per request
+app.add_middleware(CurrentContextMiddleware)
 
 # Include API Router
 app.include_router(api_router, prefix=settings.API_V1_STR)

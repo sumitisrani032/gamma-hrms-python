@@ -1,11 +1,18 @@
+from __future__ import annotations
 from functools import lru_cache
-from typing import Annotated
+try:
+    # Python 3.9+
+    from typing import Annotated, List, Union  # type: ignore
+except ImportError:  # pragma: no cover
+    # Python <3.9
+    from typing_extensions import Annotated
+    from typing import List, Union
 
 from pydantic import AnyUrl, BeforeValidator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-def _assemble_cors_origins(value: str | list[str]) -> list[str]:
+def _assemble_cors_origins(value: Union[str, List[str]]) -> List[str]:
     if isinstance(value, str):
         if value == "*":
             return ["*"]
@@ -13,7 +20,7 @@ def _assemble_cors_origins(value: str | list[str]) -> list[str]:
     return value
 
 
-CorsOrigins = Annotated[list[str], BeforeValidator(_assemble_cors_origins)]
+CorsOrigins = Annotated[List[str], BeforeValidator(_assemble_cors_origins)]
 
 
 class Settings(BaseSettings):
