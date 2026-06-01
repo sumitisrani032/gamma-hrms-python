@@ -93,12 +93,15 @@ class EmployeeSalaryRepository:
         self,
         *,
         employee_id: str | None = None,
+        employee_ids: list[str] | None = None,
         offset: int = 0,
         limit: int = 100,
     ) -> tuple[Sequence[EmployeeSalary], int]:
         filters = []
         if employee_id is not None:
             filters.append(EmployeeSalary.employee_id == employee_id)
+        if employee_ids is not None:
+            filters.append(EmployeeSalary.employee_id.in_(employee_ids))
 
         total_stmt = select(func.count()).select_from(EmployeeSalary).where(*filters)
         total = await self.db.scalar(total_stmt)

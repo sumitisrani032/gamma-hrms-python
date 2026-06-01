@@ -142,11 +142,12 @@ async def create_employee_salary(
 @employee_salary_router.get("", response_model=EmployeeSalaryList)
 async def list_employee_salaries(
     employee_id: str | None = None,
+    search: str | None = None,
     offset: int = Query(default=0, ge=0),
     limit: int = Query(default=100, ge=1, le=500),
     service: EmployeeSalaryService = Depends(_employee_salary_service),
 ) -> EmployeeSalaryList:
-    return await service.list(employee_id=employee_id, offset=offset, limit=limit)
+    return await service.list(employee_id=employee_id, search=search, offset=offset, limit=limit)
 
 
 @employee_salary_router.get("/{salary_id}", response_model=EmployeeSalaryRead)

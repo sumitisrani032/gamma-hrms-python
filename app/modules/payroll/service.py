@@ -117,10 +117,29 @@ class EmployeeSalaryService:
         self,
         *,
         employee_id: str | None = None,
+        search: str | None = None,
         offset: int = 0,
         limit: int = 100,
     ) -> EmployeeSalaryList:
-        items, total = await self.repository.list(employee_id=employee_id, offset=offset, limit=limit)
+        employee_ids = None
+        if search:
+            result = await self.db.execute(
+                text("""
+                    SELECT id FROM employees
+                    WHERE LOWER(CONCAT_WS(' ', first_name, middle_name, last_name)) LIKE LOWER(:search)
+                """),
+                {"search": f"%{search}%"},
+            )
+            employee_ids = [str(row[0]) for row in result]
+            if not employee_ids:
+                return EmployeeSalaryList(items=[], total=0)
+
+        items, total = await self.repository.list(
+            employee_id=employee_id,
+            employee_ids=employee_ids,
+            offset=offset,
+            limit=limit,
+        )
         dtos = [EmployeeSalaryRead.model_validate(o) for o in items]
         if dtos:
             name_map = await self._fetch_employee_names([d.employee_id for d in dtos])
