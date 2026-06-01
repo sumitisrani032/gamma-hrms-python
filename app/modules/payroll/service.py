@@ -312,14 +312,6 @@ class EmployeePayslipService:
         salary_result = await self.db.scalars(salary_stmt)
         all_salaries = list(salary_result.all())
 
-        # Fetch existing payslips for the period (skip duplicates)
-        existing_stmt = select(EmployeePayslip).where(
-            EmployeePayslip.month == month,
-            EmployeePayslip.year == year,
-        )
-        existing_result = await self.db.scalars(existing_stmt)
-        existing_employee_ids = {p.employee_id for p in existing_result.all()}
-
         # Fetch all active salary components master
         comp_stmt = select(SalaryComponent).where(SalaryComponent.is_active == True)
         comp_result = await self.db.scalars(comp_stmt)
@@ -337,19 +329,9 @@ class EmployeePayslipService:
         today = date.today()
 
         for salary in all_salaries:
-            if salary.employee_id in existing_employee_ids:
-                items.append(EmployeePayslipGenerateResultItem(
-                    employee_id=salary.employee_id,
-                    employee_name=emp_map.get(salary.employee_id),
-                    status="skipped",
-                    message="Already exists for this period",
-                ))
-                skipped_count += 1
-                continue
 
             try:
-                # Fetch component allocations for this salary
-                link_stmt = select(EmployeePayslip.salary)  # noqa
+                # Fetch the current editable component setup for this salary.
                 from app.modules.payroll.model import EmployeeSalaryComponent
                 link_result = await self.db.execute(
                     select(EmployeeSalaryComponent).where(
